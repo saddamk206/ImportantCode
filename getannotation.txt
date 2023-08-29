@@ -1,0 +1,46 @@
+string s = @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='false'>
+                          <entity name='annotation'>
+                            <attribute name='subject' />
+                            <attribute name='notetext' />
+                            <attribute name='filename' />
+                            <attribute name='annotationid' />
+                            <order attribute='createdon' descending='false' />
+                            <link-entity name='new_reportdata' from='new_reportdataid' to='objectid' alias='ab'>
+                              <filter type='and'>
+                                <condition attribute='new_reportdataid' operator='eq' uiname='ddsa' uitype='new_reportdata' value='" + reportdataid + "' />" +
+                              "</filter></link-entity></entity></fetch>";
+
+            var efr = new RetrieveMultipleRequest()
+            {
+                Query = new FetchExpression(s)
+            };
+
+            var entityResults = ((RetrieveMultipleResponse)service.Execute(efr)).EntityCollection;
+            if (entityResults.Entities.Count > 0)
+            {
+                Entity annotation = entityResults[0];
+                annotation.Attributes["subject"] = "Contacts";
+                annotation.Attributes["notetext"] = data;
+                service.Update(annotation);
+            }
+            else
+            {
+                Entity annotation = new Entity("annotation");
+                annotation.Attributes["subject"] = "Contacts";
+                annotation.Attributes["notetext"] = data;
+                //Create the Annotation object.
+                var _annotationId = service.Create(annotation);
+                // Update the knowledge article record
+                EntityReferenceCollection relatedEntities = new EntityReferenceCollection();
+                relatedEntities.Add(new EntityReference(annotation.LogicalName, _annotationId));
+                Relationship relationship = new Relationship("new_reportdata_Annotations");
+                // Step 3: Associate the annotation record with the incident record.
+                service.Associate("new_reportdata", reportdataid, relationship,
+                    relatedEntities);
+            }
+
+            Entity updateEntity = new Entity();
+            updateEntity.Id = targetEntity.Id;
+            updateEntity.LogicalName = targetEntity.LogicalName;
+            updateEntity.Attributes["new_iscontactupdated"] = true;
+            service.Update(updateEntity);

@@ -1,0 +1,13 @@
+var wiz = $('#wizard');debugger;
+    $('.table tr:not(:first)').each(function () {
+        var row = this;
+        var tbl = $('<table/>');
+        $('td', $(this)).each(function (index) {
+            var tr = $('<tr/>');
+           // tr.append($('.table th').eq(index).clone());
+            tr.append($(this).clone());
+            tbl.append(tr);
+        });debugger;
+        wiz.append($("  <div class='col-xs-12 col-sm-4'>   <div class='card'> <a class='img-card' href='http://www.fostrap.com/2016/03/bootstrap-3-carousel-fade-effect.html'> <img src='https://1.bp.blogspot.com/-Bii3S69BdjQ/VtdOpIi4aoI/AAAAAAAABlk/F0z23Yr59f0/s640/cover.jpg' />     </a> <div class='card-content'>     <h4 class='card-title'>         <a id='productdtl' href='http://www.fostrap.com/2016/03/bootstrap-3-carousel-fade-effect.html'>  "+$(this)[0].children[0].dataset.value+"     </a>     </h4>     <p class=''>          "+$(this)[0].children[1].dataset.value+"    </p> <p class=''>          "+$(this)[0].children[2].dataset.value+"    </p>  <p class=''>          "+$(this)[0].children[3].dataset.value+"    </p>  </div> <div class='card-read-more'>     <a href='http://www.fostrap.com/2016/03/bootstrap-3-carousel-fade-effect.html' class='btn btn-link btn-block'>         Read More     </a> </div>   </div>                    </div>"));
+    });
+      $('.table').remove();
